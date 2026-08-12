@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Operations Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, button { padding: 8px; font-size: 16px; width: 200px; }
+        button { cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px; }
+        #result { margin-top: 20px; font-size: 20px; font-weight: bold; color: #28a745; }
+    </style>
+</head>
+<body>
+
+    <h2>Operations Calculator</h2>
+
+    <div class="form-group">
+        <label for="number1">Number 1:</label>
+        <input type="number" id="number1" placeholder="Ex: 10" step="any">
+    </div>
+
+    <div class="form-group">
+        <label for="operation">Operation:</label>
+        <select id="operation">
+            <option value="add">Suma (+)</option>
+            <option value="subtract">Resta (-)</option>
+            <option value="multiply">Multiplicación (*)</option>
+            <option value="divide">División (/)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="number2">Number 2:</label>
+        <input type="number" id="number2" placeholder="Ex: 5" step="any">
+    </div>
+
+    <button onclick="calculate()">Calculate</button>
+
+    <div id="result"></div>
+
+    <script>
+        function calculate() {
+            const num1 = document.getElementById('number1').value;
+            const num2 = document.getElementById('number2').value;
+            const op = document.getElementById('operation').value;
+
+            if (num1 === '' || num2 === '') {
+                document.getElementById('result').innerText = 'Please enter both numbers.';
+                return;
+            }
+
+            const url = `/api/v1/operations/calculate?number1=${num1}&number2=${num2}&operation=${op}`;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error in calculation');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    document.getElementById('result').innerText = 'Result: ' + data;
+                })
+                .catch(error => {
+                    document.getElementById('result').innerText = 'Error: Cannot process operation';
+                });
+        }
+    </script>
+
+</body>
+</html>

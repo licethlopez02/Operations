@@ -1,3 +1,6 @@
 spring:
   application:
     name: Operations
+    
+server:
+      port: 8080
