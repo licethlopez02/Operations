@@ -1,11 +1,9 @@
 package co.edu.uptc.operations.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import co.edu.uptc.operations.dto.OperationResponseDTO;
 import co.edu.uptc.operations.service.OperationsService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/operations")
@@ -18,11 +16,12 @@ public class OperationsController {
     }
 
     @GetMapping("/calculate")
-    public double calculate(
+    public ResponseEntity<OperationResponseDTO> calculate(
             @RequestParam double number1,
             @RequestParam double number2,
             @RequestParam String operation) {
 
-        return operationsService.calculate(number1, number2, operation);
+        OperationResponseDTO response = operationsService.calculate(number1, number2, operation);
+        return ResponseEntity.ok(response);
     }
 }
