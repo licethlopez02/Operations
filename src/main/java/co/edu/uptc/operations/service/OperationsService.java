@@ -1,31 +1,41 @@
 package co.edu.uptc.operations.service;
 
+import co.edu.uptc.operations.dto.OperationResponseDTO;
+import co.edu.uptc.operations.exception.DivisionByZeroException;
+import co.edu.uptc.operations.exception.InvalidOperationException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OperationsService {
 
-    public double calculate(double number1, double number2, String operation) {
+    public OperationResponseDTO calculate(double number1, double number2, String operation) {
         String op = operation.toLowerCase().trim();
 
+        double result;
         switch (op) {
             case "sum":
-                return number1 + number2;
+                result = number1 + number2;
+                break;
 
             case "subtract":
-                return number1 - number2;
+                result = number1 - number2;
+                break;
 
             case "multiply":
-                return number1 * number2;
+                result = number1 * number2;
+                break;
 
             case "divide":
                 if (number2 == 0) {
-                    throw new IllegalArgumentException("Cannot divide by zero");
+                    throw new DivisionByZeroException("Cannot divide by zero");
                 }
-                return number1 / number2;
+                result = number1 / number2;
+                break;
 
             default:
-                throw new IllegalArgumentException("Invalid operation: " + operation);
+                throw new InvalidOperationException("Invalid operation: " + operation);
         }
+
+        return new OperationResponseDTO(number1, number2, operation, result);
     }
 }
