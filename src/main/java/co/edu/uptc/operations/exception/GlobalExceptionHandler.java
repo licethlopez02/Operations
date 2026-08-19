@@ -1,6 +1,8 @@
 package co.edu.uptc.operations.exception;
 
 import co.edu.uptc.operations.dto.ErrorResponseDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,8 +14,12 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(DivisionByZeroException.class)
     public ResponseEntity<ErrorResponseDTO> handleDivisionByZero(DivisionByZeroException ex) {
+        log.error("Division error: {}", ex.getMessage());
+
         ErrorResponseDTO error = new ErrorResponseDTO(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -25,6 +31,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidOperationException.class)
     public ResponseEntity<ErrorResponseDTO> handleInvalidOperation(InvalidOperationException ex) {
+        log.error("Invalid operation error: {}", ex.getMessage());
+
         ErrorResponseDTO error = new ErrorResponseDTO(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -34,11 +42,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    // Captura letras o caracteres inválidos en parámetros numéricos
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponseDTO> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        String message = String.format("Invalid value '%s' for parameter '%s'. Must be a valid number.", 
+        String message = String.format("Invalid value '%s' for parameter '%s'. Must be a valid number.",
                 ex.getValue(), ex.getName());
+
+        log.error("Type mismatch error: {}", message);
 
         ErrorResponseDTO error = new ErrorResponseDTO(
                 LocalDateTime.now(),
@@ -47,5 +56,19 @@ public class GlobalExceptionHandler {
                 message
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    // Captura cualquier otro error no contemplado (500 Internal Server Error)
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponseDTO> handleGenericException(Exception ex) {
+        log.error("Unexpected error occurred: ", ex);
+
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Internal Server Error",
+                "An unexpected error occurred"
+        );
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

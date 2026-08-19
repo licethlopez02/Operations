@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Carpeta donde se guardarán los logs -->
+    <property name="LOG_PATH" value="logs" />
+
+    <!-- 1. Salida en Consola (Formato texto legible para desarrollo) -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 2. Archivo en formato JSON rotativo por día (Máximo 8 días) -->
+    <appender name="JSON_ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Filtrar para guardar únicamente logs de tipo ERROR -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+
+        <!-- Nombre del archivo del día actual -->
+        <file>${LOG_PATH}/error.json</file>
+
+        <!-- Política de rotación diaria -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Patrón del nombre: logs/error-2026-08-19.json -->
+            <fileNamePattern>${LOG_PATH}/error-%d{yyyy-MM-dd}.json</fileNamePattern>
+            <!-- Máximo 8 días de almacenamiento -->
+            <maxHistory>8</maxHistory>
+        </rollingPolicy>
+
+        <!-- Formateador a JSON -->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
+
+    <!-- Configuración Global -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="JSON_ERROR_FILE" />
+    </root>
+
+</configuration>
