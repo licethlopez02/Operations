@@ -1,0 +1,2 @@
+{"@timestamp":"2026-09-03T21:04:58.9204006-05:00","@version":"1","message":"Division error: Cannot divide by zero","logger_name":"co.edu.uptc.operations.exception.GlobalExceptionHandler","thread_name":"http-nio-8081-exec-4","level":"ERROR","level_value":40000}
+{"@timestamp":"2026-09-03T21:09:47.5536261-05:00","@version":"1","message":"Division error: Cannot divide by zero","logger_name":"co.edu.uptc.operations.exception.GlobalExceptionHandler","thread_name":"http-nio-8081-exec-2","level":"ERROR","level_value":40000}
